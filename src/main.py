@@ -1,6 +1,6 @@
-from src.Courier import Courier
-from src.Order import Order
-from src.graph.MonopolyStreetGraphGenerator import MonopolyStreetGraphGenerator
+from Courier import Courier
+from Order import Order
+from graph.MonopolyStreetGraphGenerator import MonopolyStreetGraphGenerator
 
 
 def main_menu():

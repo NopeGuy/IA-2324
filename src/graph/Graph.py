@@ -4,7 +4,8 @@ from queue import Queue
 import matplotlib.pyplot as plt
 import networkx as nx
 
-from src.graph.Node import Node
+from graph.Node import Node 
+
 
 
 class Grafo:

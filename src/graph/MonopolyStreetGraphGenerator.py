@@ -1,4 +1,4 @@
-from src.graph.Graph import Grafo
+from graph.Graph import Grafo
 
 
 class MonopolyStreetGraphGenerator:
