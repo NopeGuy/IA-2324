@@ -4,7 +4,8 @@ from queue import Queue
 import matplotlib.pyplot as plt
 import networkx as nx
 
-from src.graph.Node import Node
+from graph.Node import Node 
+
 
 
 class Grafo:
@@ -127,6 +128,14 @@ class Grafo:
             return 1000
         else:
             return self.m_h[nodo]
+        
+    def calculate_turns_heuristic(self, current_node, goal_node):
+        current_node_neighbors = set([neighbor for neighbor, _ in self.m_graph[current_node]])
+        goal_node_neighbors = set([neighbor for neighbor, _ in self.m_graph[goal_node]])
+
+        turns = len(current_node_neighbors.intersection(goal_node_neighbors))
+        return turns
+
 
     def procura_aStar(self, start, end):
         open_list = {start}
@@ -140,15 +149,14 @@ class Grafo:
             calc_heurist = {}
             flag = 0
             for v in open_list:
-                if n == None:
+                if n is None:
                     n = v
                 else:
                     flag = 1
-                    calc_heurist[v] = g[v] + self.getH(v)
+                    calc_heurist[v] = g[v] + self.calculate_turns_heuristic(v, end)
             if flag == 1:
-                min_estima = self.calcula_est(calc_heurist)
-                n = min_estima
-            if n == None:
+                n = self.calcula_est(calc_heurist)
+            if n is None:
                 print('Path does not exist!')
                 return None
             if n == end:
@@ -184,9 +192,9 @@ class Grafo:
         while len(open_list) > 0:
             n = None
             for v in open_list:
-                if n == None or self.m_h[v] < self.m_h[n]:
+                if n is None or self.calculate_turns_heuristic(v, end) < self.calculate_turns_heuristic(n, end):
                     n = v
-            if n == None:
+            if n is None:
                 print('Path does not exist!')
                 return None
             if n == end:
