@@ -7,7 +7,6 @@ import networkx as nx
 from graph.Node import Node 
 
 
-
 class Grafo:
 
     def __init__(self, directed=False):

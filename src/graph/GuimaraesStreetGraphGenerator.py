@@ -2,7 +2,7 @@ from graph.Graph import Grafo
 
 class GuimaraesStreetGraphGenerator:
     def generate_graph(self):
-        graph = Grafo(directed=True)
+        graph = Grafo()
 
         graph.add_edge("Alameda D Afonso Henriques", "Avenida Conde Margaride", 2)
         graph.add_edge("Alameda D Afonso Henriques", "Rua de Santo Antonio", 3)

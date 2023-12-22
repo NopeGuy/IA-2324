@@ -2,22 +2,42 @@ def compare_search_algorithm_results(monopoly_graph, starting_node, finishing_no
     print("===== Compare Search Algorithm Results =====")
 
     path_a_star, cost_a_star = monopoly_graph.procura_aStar(starting_node, finishing_node)
-    # path_greedy, cost_greedy = monopoly_graph.greedy(starting_node, finishing_node)
+    path_greedy, cost_greedy = monopoly_graph.greedy(starting_node, finishing_node)
     path_bfs, cost_bfs = monopoly_graph.procura_BFS(starting_node, finishing_node)
     path_dfs, cost_dfs = monopoly_graph.procura_DFS(starting_node, finishing_node)
 
-    print("A* Search Result:")
-    print("Path:", path_a_star)
-    print("Cost:", cost_a_star)
+    try:
+        print("\nA* Search Result:")
+        print("Path:", path_a_star)
+        print("Cost:", cost_a_star)
+    except:
+        print("\nA* Search Result:")
+        print("Path: None")
+        print("Cost: None")
 
-    print("\nGreedy Search Result:")
-    # print("Path:", path_greedy)
-    # print("Cost:", cost_greedy)
+    try:
+        print("\nGreedy Search Result:")
+        print("Path:", path_greedy)
+        print("Cost:", cost_greedy)
+    except:
+        print("\nGreedy Search Result:")
+        print("Path: None")
+        print("Cost: None")
 
-    print("\nBFS Search Result:")
-    print("Path:", path_bfs)
-    print("Cost:", cost_bfs)
+    try:
+        print("\nBFS Search Result:")
+        print("Path:", path_bfs)
+        print("Cost:", cost_bfs)
+    except:
+        print("\nBFS Search Result:")
+        print("Path: None")
+        print("Cost: None")
 
-    print("\nDFS Search Result:")
-    print("Path:", path_dfs)
-    print("Cost:", cost_dfs)
+    try:
+        print("\nDFS Search Result:")
+        print("Path:", path_dfs)
+        print("Cost:", cost_dfs)
+    except:
+        print("\nDFS Search Result:")
+        print("Path: None")
+        print("Cost: None")
