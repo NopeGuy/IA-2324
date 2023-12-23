@@ -1,12 +1,12 @@
 class Courier:
-    def __init__(self, name, transport, weight=0, orders=None, ratinglist=[], rating=0):
+    def __init__(self, name, transport, weight=0, orders=None):
         self.name = name
         self.transport = transport
         self.weight = weight
         if orders is not None:
             self._deliveries.extend(orders)
-        self.ratinglist = ratinglist
-        self.rating = rating
+        self.ratinglist = []
+        self.rating = 0
 
     def add_delivery(self, order):
         self._deliveries.append(order)
@@ -45,17 +45,22 @@ class Courier:
         else:
             return 0
         
+    def calculateMaxTime(self, path_cost, order_weight):
+            total_weight = self.weight + order_weight
+            if self.transport == "Bicycle":
+                return path_cost / (self.average_speed() - (0.6 * total_weight)) * 60
+            elif self.transport == "Moto":
+                return path_cost / (self.average_speed() - (0.5 * total_weight)) * 60
+            elif self.transport == "Car":
+                return path_cost / (self.average_speed() - (0.1 * total_weight)) * 60
+
     def verifyTime(self, path_cost, order_processing_time, order_weight):
-        total_weight = self.weight + order_weight
-        if self.transport == "Bicycle":
-            max_time = path_cost / (self.average_speed() - (0.6 * total_weight)) * 60
-            return max_time <= order_processing_time
-        elif self.transport == "Moto":
-            max_time = path_cost / (self.average_speed() - (0.5 * total_weight)) * 60
-            return max_time <= order_processing_time
-        elif self.transport == "Car":
-            max_time = path_cost / (self.average_speed() - (0.1 * total_weight)) * 60
-            return max_time <= order_processing_time
+        max_time = self.calculateMaxTime(path_cost, order_weight)
+        return max_time <= order_processing_time
+
+    def getTime(self, path_cost, order_weight):
+        max_time = self.calculateMaxTime(path_cost, order_weight)
+        return max_time
 
     def can_combine_delivery(self, new_order):
         for delivery in self._deliveries:

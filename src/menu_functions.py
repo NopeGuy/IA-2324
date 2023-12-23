@@ -20,7 +20,8 @@ def dev_menu():
     print("1. Represent Delivery Points as Graph")
     print("2. Use Search Algorithms")
     print("3. Compare Search Algorithm Results")
-    print("4. Import test cases")
+    print("4. Import test couriers")
+    print("5. Import test orders")
     print("0. Exit to Main Menu")
     print("===============================")
     
@@ -225,6 +226,7 @@ def display_couriers(couriers):
     print("===== Registered Couriers =====")
     for courier in couriers:
         print(f"Courier: {courier.name}, Transport: {courier.transport}, Rating: {courier.rating}")
+        print(f"Rating List: {courier.ratinglist}")
     print("===============================")
     
 def choose_best_algorithm(graph, starting_node, finishing_node):
@@ -324,7 +326,7 @@ def process_orders(orders, couriers, guimaraes_graph):
     orders_processed = False
 
     print("\n===== Processing Orders =====")
-    
+
     for order in orders:
         if order.status == "Waiting":
             path, cost = choose_best_algorithm(guimaraes_graph, starting_node, order.last_node)
@@ -338,14 +340,17 @@ def process_orders(orders, couriers, guimaraes_graph):
         return
 
     print("\n===== Assigning Orders to Couriers =====")
-    
+
     for order in orders:
         if order.path is not None and order.status == "Waiting":
-            sorted_couriers = sorted(couriers, key=lambda courier: (courier.transport != "Bicycle", courier.transport != "Moto", courier.transport != "Car"))
+            sorted_couriers = sorted(couriers, key=lambda courier: (
+            courier.transport != "Bicycle", courier.transport != "Moto", courier.transport != "Car"))
 
             selected_courier = None
             for courier in sorted_couriers:
                 if courier.verifyWeight(order.weight) and courier.verifyTime(cost, order.processing_time, order.weight):
+                    estimated_time = courier.getTime(cost, order.weight)
+                    demanded_time = order.processing_time
                     if courier.can_combine_delivery(order) or len(courier.get_deliveries()) == 0:
                         selected_courier = courier
                         break
@@ -353,11 +358,25 @@ def process_orders(orders, couriers, guimaraes_graph):
             if selected_courier is not None:
                 selected_courier.add_delivery(order)
                 print(f"\nOrder for {order.client_name} added to {selected_courier.name} courier.")
-                rating = random.randint(1, 5)
+                rating = calculate_rating_based_on_percentage_difference(estimated_time, demanded_time)
                 print(f"User gave courier {selected_courier.name} a rating of {rating}.")
-                courier.calculate_rating(rating)
-                print(f"Courier {selected_courier.name} has now a rating of {courier.rating}.")
+                selected_courier.calculate_rating(rating)
+                print(f"Courier {selected_courier.name} has now a rating of {selected_courier.rating}.")
                 order.status = "Delivered"
             else:
                 print(f"\nNo suitable courier found for order to {order.client_name}.")
-                
+
+
+def calculate_rating_based_on_percentage_difference(estimated_time, demanded_time):
+    percentage_difference = ((estimated_time - demanded_time) / demanded_time) * 100
+    if percentage_difference <= -75:
+        return 5
+    if percentage_difference <= -45:
+        return 4
+    if percentage_difference <= -20:
+        return 3
+    if percentage_difference <= -5:
+        return 2
+    else:
+        return 1
+    

@@ -101,7 +101,10 @@ def main():
                         print("\nNot a valid option.")
                         
                 elif(choice == 4):
-                    Tests.import_cases(couriers, orders)
+                    Tests.import_couriers(couriers)
+                    
+                elif(choice == 5):
+                    Tests.import_orders(orders)
                         
         else:
             print("\nInvalid choice. Please enter a valid option.")
