@@ -28,7 +28,7 @@
 ## Overview
 
 This project is part of the evaluation instrument for the "Search Algorithms" topic in the Artificial Intelligence course at the University of Minho. The objective is to address sustainability concerns by developing search algorithms for the Health Planet delivery system. The company aims to optimize its delivery routes using different modes of transportation, considering energy consumption and ecological impact.
-This project provides functionality for working with street graphs and comparing various search algorithms. It includes classes for representing nodes, orders, and graphs, as well as functions for graph search algorithms such as A*, Greedy, BFS, and DFS.
+This project provides functionality for working with street graphs and comparing various search algorithms. It includes classes for representing nodes, orders, and graphs, as well as functions for graph search algorithms such as A*, Greedy, BFS, DFS, etc.
 
 ## Getting Started
 
@@ -127,6 +127,8 @@ Represents a courier with a specific transportation method and it's orders.
 -   Greedy Search
 -   Breadth-First Search (BFS)
 -   Depth-First Search (DFS)
+-   Uniform cost Search
+-   nIterative Deepening Search
 
 ## Graph Visualization
 
