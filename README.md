@@ -5,13 +5,8 @@
   <img src="https://github.com/NopeGuy/IA-2324/blob/main/circuit-animation.gif?raw=true" />
 </p>
 
-
-## Overview
-
-This project is part of the evaluation instrument for the "Search Algorithms" topic in the Artificial Intelligence course at the University of Minho. The objective is to address sustainability concerns by developing search algorithms for the Health Planet delivery system. The company aims to optimize its delivery routes using different modes of transportation, considering energy consumption and ecological impact.
-This project provides functionality for working with street graphs and comparing various search algorithms. It includes classes for representing nodes, orders, and graphs, as well as functions for graph search algorithms such as A*, Greedy, BFS, and DFS.
-
 ## Table of Contents
+- [Overview](#overview)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
@@ -30,6 +25,10 @@ This project provides functionality for working with street graphs and comparing
 - [Graph Visualization](#graph-visualization)
 - [Contributors](#contributors)
 
+## Overview
+
+This project is part of the evaluation instrument for the "Search Algorithms" topic in the Artificial Intelligence course at the University of Minho. The objective is to address sustainability concerns by developing search algorithms for the Health Planet delivery system. The company aims to optimize its delivery routes using different modes of transportation, considering energy consumption and ecological impact.
+This project provides functionality for working with street graphs and comparing various search algorithms. It includes classes for representing nodes, orders, and graphs, as well as functions for graph search algorithms such as A*, Greedy, BFS, and DFS.
 
 ## Getting Started
 
