@@ -1,3 +1,5 @@
+import random
+from matplotlib.pylab import rand
 from Courier import Courier
 from Order import Order
 
@@ -5,10 +7,11 @@ def main_menu():
     print("===== Health Planet Delivery System =====")
     print("1. Add Courier")
     print("2. Register Order")
-    print("3. Display Registered Orders")
-    print("4. Display Registered Couriers")
-    print("5. Advance a day")
-    print("6. Dev Menu")
+    print("3. Display Pending Orders")
+    print("4. Display Sent Orders")
+    print("5. Display Registered Couriers")
+    print("6. Advance a day")
+    print("7. Dev Menu")
     print("0. Exit")
     print("===============================")
 
@@ -86,13 +89,14 @@ def search_menu(guimaraes_graph):
 
 
 def compare_search_algorithm_results(guimaraes_graph, starting_node, finishing_node):
-    print("===== Compare Search Algorithm Results =====")
+    print("\n===== Compare Search Algorithm Results =====")
     try:
         path_a_star, cost_a_star = guimaraes_graph.procura_aStar(starting_node, finishing_node)
         print("\nA* Search Result:")
         print("Path:", path_a_star)
         print("Cost:", cost_a_star)
     except:
+        print("\nA* Search Result:")
         print("\nNo path found.")
     
     try:
@@ -101,6 +105,7 @@ def compare_search_algorithm_results(guimaraes_graph, starting_node, finishing_n
         print("Path:", path_greedy)
         print("Cost:", cost_greedy)
     except:
+        print("\nGreedy Search Result:")
         print("\nNo path found.")
     
     try:
@@ -109,6 +114,7 @@ def compare_search_algorithm_results(guimaraes_graph, starting_node, finishing_n
         print("Path:", path_bfs)
         print("Cost:", cost_bfs)
     except:
+        print("\nBFS Search Result:")
         print("\nNo path found.")
     
     try:
@@ -117,7 +123,27 @@ def compare_search_algorithm_results(guimaraes_graph, starting_node, finishing_n
         print("Path:", path_dfs)
         print("Cost:", cost_dfs)
     except:
+        print("\nDFS Search Result:")
         print("\nNo path found.")
+        
+    try:
+        path_uc, cost_uc = guimaraes_graph.procura_uniform_cost(starting_node, finishing_node)
+        print("\nUniform cost Search Result:")
+        print("Path:", path_uc)
+        print("Cost:", cost_uc)
+    except:
+        print("\nUniform cost Search Result:")
+        print("\nNo path found.")
+        
+    try:
+        path_id, cost_id = guimaraes_graph.procura_IDDFS(starting_node, finishing_node)
+        print("\nIterative Deepening Search Result:")
+        print("Path:", path_id)
+        print("Cost:", cost_id)
+    except:
+        print("\nIterative Deepening Search Result:")
+        print("\nNo path found.")
+        
 
 def add_courier():
     print("===== Add Courier =====")
@@ -161,7 +187,7 @@ def add_order(guimaraes_graph):
             try:
                 days, hours, minutes = map(int, time_input.split(','))
                 processing_time = days * 24 * 60 + hours * 60 + minutes
-                break  # Break out of the inner loop if input is valid
+                break
             except ValueError:
                 print("Invalid input for processing time. Please enter numeric values for days, hours, and minutes separated by commas.")
                 continue
@@ -174,7 +200,7 @@ def add_order(guimaraes_graph):
         return order
 
 
-def display_orders(orders):
+def display_pending_orders(orders):
     print("===== Registered Orders =====")
     for order in orders:
         if(order.status == "Waiting"):
@@ -182,12 +208,22 @@ def display_orders(orders):
                 f" Processing Time: {order.processing_time} minutes, "
                 f"Start Node: {order.starting_node}, Last Node: {order.last_node}")
     print("===============================")
+    
+def display_sent_orders(orders):
+    print("===== Registered Orders =====")
+    for order in orders:
+        if(order.status == "Delivered"):
+            print(f"Client: {order.client_name}, Weight: {order.weight} kg, Volume: {order.volume} cm3,"
+                f" Processing Time: {order.processing_time} minutes, "
+                f"Start Node: {order.starting_node}, Last Node: {order.last_node}")
+    print("===============================")
 
 
 def display_couriers(couriers):
+    couriers.sort(key=lambda courier: courier.rating, reverse=True)
     print("===== Registered Couriers =====")
     for courier in couriers:
-        print(f"Courier: {courier.name}, Transport: {courier.transport}")
+        print(f"Courier: {courier.name}, Transport: {courier.transport}, Rating: {courier.rating}")
     print("===============================")
     
 def choose_best_algorithm(graph, starting_node, finishing_node):
@@ -195,48 +231,89 @@ def choose_best_algorithm(graph, starting_node, finishing_node):
     cost = 0
     path = []
     
+    print("\n\n===== Compare Search Algorithm Results =====")
+    
     try:
         path_a_star, cost_a_star = guimaraes_graph.procura_aStar(starting_node, finishing_node)
-        #print("\nA* Search Result:")
-        #print("Path:", path_a_star)
-        #print("Cost:", cost_a_star)
+        print("\nA* Search Result:")
+        print("Path:", path_a_star)
+        print("Cost:", cost_a_star)
         cost = cost_a_star
         path = path_a_star
     except:
         print("\nNo A* path found.")
+        
+    print("__________________________________________________________")
     
     try:
         path_greedy, cost_greedy = guimaraes_graph.greedy(starting_node, finishing_node)
-        #print("\nGreedy Search Result:")
-        #print("Path:", path_greedy)
-        #print("Cost:", cost_greedy)
+        print("\nGreedy Search Result:")
+        print("Path:", path_greedy)
+        print("Cost:", cost_greedy)
         if cost_greedy < cost:
             cost = cost_greedy
             path = path_greedy
     except:
         print("\nNo Greedy path found.")
+        
+    print("__________________________________________________________")
+    
     
     try:
         path_bfs, cost_bfs = guimaraes_graph.procura_BFS(starting_node, finishing_node)
-        #print("\nBFS Search Result:")
-        #print("Path:", path_bfs)
-        #print("Cost:", cost_bfs)
+        print("\nBFS Search Result:")
+        print("Path:", path_bfs)
+        print("Cost:", cost_bfs)
         if cost_bfs < cost:
             cost = cost_bfs
             path = path_bfs
     except:
         print("\nNo BFS path found.")
+        
+    print("__________________________________________________________")
+    
     
     try:
         path_dfs, cost_dfs = guimaraes_graph.procura_DFS(starting_node, finishing_node)
-        #print("\nDFS Search Result:")
-        #print("Path:", path_dfs)
-        #print("Cost:", cost_dfs)
+        print("\nDFS Search Result:")
+        print("Path:", path_dfs)
+        print("Cost:", cost_dfs)
         if cost_dfs < cost:
             cost = cost_dfs
             path = path_dfs
     except:
         print("\nNo DFS path found.")
+        
+    print("__________________________________________________________")
+    
+    
+    try:
+        path_uc, cost_uc = guimaraes_graph.procura_uniform_cost(starting_node, finishing_node)
+        print("\nUniform cost Search Result:")
+        print("Path:", path_uc)
+        print("Cost:", cost_uc)
+        if cost_uc < cost:
+            cost = cost_uc
+            path = path_uc
+    except:
+        print("\nNo Uniform cost path found.")
+        
+    print("__________________________________________________________")
+    
+    
+    try:
+        path_id, cost_id = guimaraes_graph.procura_IDDFS(starting_node, finishing_node)
+        print("\nIterative Deepening Search Result:")
+        print("Path:", path_id)
+        print("Cost:", cost_id)
+        if cost_id < cost:
+            cost = cost_id
+            path = path_id
+    except:
+        print("\nNo Iterative Deepening path found.")
+        
+    print("__________________________________________________________")
+    
         
     return path, cost
         
@@ -249,8 +326,7 @@ def process_orders(orders, couriers, guimaraes_graph):
     
     for order in orders:
         if order.status == "Waiting":
-            graph_copy = guimaraes_graph.copy()
-            path, cost = choose_best_algorithm(graph_copy, starting_node, order.last_node)
+            path, cost = choose_best_algorithm(guimaraes_graph, starting_node, order.last_node)
             order.path = path
             order.cost = cost
             print(f"\nOrder for {order.client_name} has been processed.\nCost: {order.cost} km.\nPath: {order.path}.")
@@ -276,6 +352,10 @@ def process_orders(orders, couriers, guimaraes_graph):
             if selected_courier is not None:
                 selected_courier.add_delivery(order)
                 print(f"\nOrder for {order.client_name} added to {selected_courier.name} courier.")
+                rating = random.randint(1, 5)
+                print(f"User gave courier {selected_courier.name} a rating of {rating}.")
+                courier.calculate_rating(rating)
+                print(f"Courier {selected_courier.name} has now a rating of {courier.rating}.")
                 order.status = "Delivered"
             else:
                 print(f"\nNo suitable courier found for order to {order.client_name}.")

@@ -1,3 +1,4 @@
+from asyncio import PriorityQueue
 import copy
 import math
 from queue import Queue
@@ -265,10 +266,76 @@ class Grafo:
                     return resultado
         path.pop()
         return None
+        
+    def procura_uniform_cost(self, start, end):
+        open_list = {start}
+        closed_list = set([])
+        g = {}
+        g[start] = 0
+        parents = {}
+        parents[start] = start
 
-    def copy(self):
-        new_graph = Grafo(directed=self.m_directed)
-        new_graph.m_nodes = copy.deepcopy(self.m_nodes)
-        new_graph.m_graph = copy.deepcopy(self.m_graph)
-        new_graph.m_h = copy.deepcopy(self.m_h)
-        return new_graph
+        while len(open_list) > 0:
+            n = None
+            for v in open_list:
+                if n is None or g[v] + self.calculate_turns_heuristic(v, end) < g[n] + self.calculate_turns_heuristic(n, end):
+                    n = v
+            if n is None:
+                print('Path does not exist!')
+                return None
+
+            if n == end:
+                reconst_path = []
+                while parents[n] != n:
+                    reconst_path.append(n)
+                    n = parents[n]
+                reconst_path.append(start)
+                reconst_path.reverse()
+                return reconst_path, self.calcula_custo(reconst_path)
+
+            for (m, weight) in self.getNeighbours(n):
+                if m not in open_list and m not in closed_list:
+                    open_list.add(m)
+                    parents[m] = n
+                    g[m] = g[n] + weight
+                else:
+                    if g[m] > g[n] + weight:
+                        g[m] = g[n] + weight
+                        parents[m] = n
+                        if m in closed_list:
+                            closed_list.remove(m)
+                            open_list.add(m)
+
+            open_list.remove(n)
+            closed_list.add(n)
+
+        print('Path does not exist!')
+        return None
+
+    def procura_IDDFS(self, start, end, max_depth=100):
+        for depth in range(max_depth):
+            result = self.depth_limited_DFS(start, end, depth)
+            if result is not None:
+                return result
+        print('Path does not exist within the specified depth!')
+        return None
+
+    def depth_limited_DFS(self, start, end, depth, path=None, visited=None):
+        if visited is None:
+            visited = set()
+        if path is None:
+            path = []
+        path.append(start)
+        visited.add(start)
+
+        if depth == 0 and start == end:
+            custoT = self.calcula_custo(path)
+            return path, custoT
+        elif depth > 0:
+            for (adjacente, peso) in self.m_graph[start]:
+                if adjacente not in visited:
+                    result = self.depth_limited_DFS(adjacente, end, depth - 1, path, visited)
+                    if result is not None:
+                        return result
+        path.pop()
+        return None

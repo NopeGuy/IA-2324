@@ -1,11 +1,12 @@
 class Courier:
-    def __init__(self, name, transport, weight=0, orders=None):
+    def __init__(self, name, transport, weight=0, orders=None, ratinglist=[], rating=0):
         self.name = name
         self.transport = transport
         self.weight = weight
-        self._deliveries = []
         if orders is not None:
             self._deliveries.extend(orders)
+        self.ratinglist = ratinglist
+        self.rating = rating
 
     def add_delivery(self, order):
         self._deliveries.append(order)
@@ -67,3 +68,8 @@ class Courier:
         last_node_order2 = order2.path[-1]
 
         return last_node_order1 in order2.path or last_node_order2 in order1.path
+
+    def calculate_rating(self, user_rating):
+        self.ratinglist.append(user_rating)
+        average_rating = sum(self.ratinglist) / len(self.ratinglist)
+        self.rating = round(average_rating)
