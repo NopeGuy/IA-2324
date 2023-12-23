@@ -1,3 +1,4 @@
+import copy
 import math
 from queue import Queue
 
@@ -93,13 +94,16 @@ class Grafo:
                 lista = (n, adjacente)
                 g.add_edge(n, adjacente, weight=peso)
 
+        # Use spring_layout for automatic layout adjustment
         pos = nx.spring_layout(g)
+        
         nx.draw_networkx(g, pos, with_labels=True, font_weight='bold')
         labels = nx.get_edge_attributes(g, 'weight')
         nx.draw_networkx_edge_labels(g, pos, edge_labels=labels)
 
         plt.draw()
         plt.show()
+
 
     def add_heuristica(self, n, estima):
         n1 = Node(n)
@@ -243,7 +247,11 @@ class Grafo:
 
         return (path, custo)
 
-    def procura_DFS(self, start, end, path=[], visited=set()):
+    def procura_DFS(self, start, end, path=None, visited = None):
+        if visited is None:
+            visited = set()
+        if path is None:
+            path = []
         path.append(start)
         visited.add(start)
 
@@ -257,3 +265,10 @@ class Grafo:
                     return resultado
         path.pop()
         return None
+
+    def copy(self):
+        new_graph = Grafo(directed=self.m_directed)
+        new_graph.m_nodes = copy.deepcopy(self.m_nodes)
+        new_graph.m_graph = copy.deepcopy(self.m_graph)
+        new_graph.m_h = copy.deepcopy(self.m_h)
+        return new_graph
