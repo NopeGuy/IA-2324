@@ -17,7 +17,8 @@ def main():
     couriers.append(courier1)
     couriers.append(courier2)
     orders.append(Order("Boda", 1, 1, 3000, "Rua de Camoes", "Rua da Saudade"))
-    orders.append(Order("Batata", 1, 1, 3000, "Rua de Camoes", "Rua da Abadia"))
+    orders.append(Order("Boda2", 1, 1, 3000, "Rua de Camoes", "Avenida Conde Margaride"))
+    orders.append(Order("Batata", 4, 1, 1000, "Rua de Camoes", "Rua da Abadia"))
 
     while True:
         print("\n      Welcome, today is " + formatted_date + ".")
@@ -34,7 +35,7 @@ def main():
                 print(f"{courier.name} added as a courier with {courier.transport}.")
                 
         elif choice == 2:
-            order = add_order()
+            order = add_order(guimaraes_graph)
             orders.append(order)
             print("Order registered successfully.")
             
@@ -45,6 +46,9 @@ def main():
         elif choice == 5:
             current_date = current_date + timedelta(days=1)
             formatted_date = current_date.strftime("%d-%m-%Y")
+            for courier in couriers:
+                courier.weight = 0
+                courier._deliveries = []
             process_orders(orders, couriers, guimaraes_graph)
         
         elif choice == 6:

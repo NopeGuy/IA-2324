@@ -20,11 +20,18 @@ def dev_menu():
     print("0. Exit to Main Menu")
     print("===============================")
     
-def get_node_final():
+def get_node_final(guimaraes_graph):
     print("===== Node Selection =====")
-    #starting_node = input("Insert starting node: ")
-    finishing_node = input("Delivery Street: ")
-    return finishing_node
+    
+    while True:
+        try:
+            finishing_node = input("Delivery Street: ")
+            if guimaraes_graph.get_node_by_name(finishing_node) is not None:
+                return finishing_node
+            else:
+                print("Invalid delivery street. Please enter a valid one.")
+        except Exception as e:
+            print(f"Error: {e}. Please enter a valid delivery street.")
 
 def get_nodes():
     print("===== Node Selection =====")
@@ -131,24 +138,40 @@ def add_courier():
         print("Invalid transport mode choice. Courier not added.")
         return None
 
-def add_order():
+def add_order(guimaraes_graph):
     print("===== Register Order =====")
 
     while True:
         client_name = input("Enter client's name: ")
+
         try:
             weight = float(input("Enter product weight (in kg): "))
-            volume = float(input("Enter product volume (in cm3): "))
-            time = input("Enter processing time (Days, Hours, Minutes): ")
-            days, hours, minutes = map(int, time.split(','))
-            processing_time = days * 24 * 60 + hours * 60 + minutes
-            starting_node = "Rua de Camoes"
-            last_node = get_node_final()
-
-            order = Order(client_name, weight, volume, processing_time, starting_node, last_node)
-            return order
         except ValueError:
-            print("Invalid input. Please enter numeric values for weight, volume, days, hours, and minutes.")
+            print("Invalid input for weight. Please enter a numeric value.")
+            continue
+
+        try:
+            volume = float(input("Enter product volume (in cm3): "))
+        except ValueError:
+            print("Invalid input for volume. Please enter a numeric value.")
+            continue
+
+        while True:
+            time_input = input("Enter processing time (Days, Hours, Minutes): ")
+            try:
+                days, hours, minutes = map(int, time_input.split(','))
+                processing_time = days * 24 * 60 + hours * 60 + minutes
+                break  # Break out of the inner loop if input is valid
+            except ValueError:
+                print("Invalid input for processing time. Please enter numeric values for days, hours, and minutes separated by commas.")
+                continue
+
+        starting_node = "Rua de Camoes"
+        last_node = get_node_final(guimaraes_graph)
+
+        order = Order(client_name, weight, volume, processing_time, starting_node, last_node)
+
+        return order
 
 
 def display_orders(orders):
@@ -174,9 +197,9 @@ def choose_best_algorithm(graph, starting_node, finishing_node):
     
     try:
         path_a_star, cost_a_star = guimaraes_graph.procura_aStar(starting_node, finishing_node)
-        print("\nA* Search Result:")
-        print("Path:", path_a_star)
-        print("Cost:", cost_a_star)
+        #print("\nA* Search Result:")
+        #print("Path:", path_a_star)
+        #print("Cost:", cost_a_star)
         cost = cost_a_star
         path = path_a_star
     except:
@@ -184,9 +207,9 @@ def choose_best_algorithm(graph, starting_node, finishing_node):
     
     try:
         path_greedy, cost_greedy = guimaraes_graph.greedy(starting_node, finishing_node)
-        print("\nGreedy Search Result:")
-        print("Path:", path_greedy)
-        print("Cost:", cost_greedy)
+        #print("\nGreedy Search Result:")
+        #print("Path:", path_greedy)
+        #print("Cost:", cost_greedy)
         if cost_greedy < cost:
             cost = cost_greedy
             path = path_greedy
@@ -195,9 +218,9 @@ def choose_best_algorithm(graph, starting_node, finishing_node):
     
     try:
         path_bfs, cost_bfs = guimaraes_graph.procura_BFS(starting_node, finishing_node)
-        print("\nBFS Search Result:")
-        print("Path:", path_bfs)
-        print("Cost:", cost_bfs)
+        #print("\nBFS Search Result:")
+        #print("Path:", path_bfs)
+        #print("Cost:", cost_bfs)
         if cost_bfs < cost:
             cost = cost_bfs
             path = path_bfs
@@ -206,9 +229,9 @@ def choose_best_algorithm(graph, starting_node, finishing_node):
     
     try:
         path_dfs, cost_dfs = guimaraes_graph.procura_DFS(starting_node, finishing_node)
-        print("\nDFS Search Result:")
-        print("Path:", path_dfs)
-        print("Cost:", cost_dfs)
+        #print("\nDFS Search Result:")
+        #print("Path:", path_dfs)
+        #print("Cost:", cost_dfs)
         if cost_dfs < cost:
             cost = cost_dfs
             path = path_dfs
@@ -220,19 +243,35 @@ def choose_best_algorithm(graph, starting_node, finishing_node):
 
 def process_orders(orders, couriers, guimaraes_graph):
     starting_node = "Rua de Camoes"
+    orders_processed = False
+
+    print("\n===== Processing Orders =====")
     
     for order in orders:
-        graph_copy = guimaraes_graph.copy()
-        path, cost = choose_best_algorithm(graph_copy, starting_node, order.last_node)
+        if order.status == "Waiting":
+            graph_copy = guimaraes_graph.copy()
+            path, cost = choose_best_algorithm(graph_copy, starting_node, order.last_node)
+            order.path = path
+            order.cost = cost
+            print(f"\nOrder for {order.client_name} has been processed.\nCost: {order.cost} km.\nPath: {order.path}.")
+            orders_processed = True
 
-        if path is not None:
+    if not orders_processed:
+        print("\nNo orders to process.")
+        return
+
+    print("\n===== Assigning Orders to Couriers =====")
+    
+    for order in orders:
+        if order.path is not None and order.status == "Waiting":
             sorted_couriers = sorted(couriers, key=lambda courier: (courier.transport != "Bicycle", courier.transport != "Moto", courier.transport != "Car"))
 
             selected_courier = None
             for courier in sorted_couriers:
                 if courier.verifyWeight(order.weight) and courier.verifyTime(cost, order.processing_time, order.weight):
-                    selected_courier = courier
-                    break
+                    if courier.can_combine_delivery(order) or len(courier.get_deliveries()) == 0:
+                        selected_courier = courier
+                        break
 
             if selected_courier is not None:
                 selected_courier.add_delivery(order)
@@ -240,3 +279,4 @@ def process_orders(orders, couriers, guimaraes_graph):
                 order.status = "Delivered"
             else:
                 print(f"\nNo suitable courier found for order to {order.client_name}.")
+                

@@ -1,24 +1,26 @@
 class Courier:
-    def __init__(self, name, transport, orders=None):
+    def __init__(self, name, transport, weight=0, orders=None):
         self.name = name
         self.transport = transport
+        self.weight = weight
         self._deliveries = []
         if orders is not None:
             self._deliveries.extend(orders)
 
     def add_delivery(self, order):
         self._deliveries.append(order)
+        self.weight += order.weight
 
     def get_deliveries(self):
         return self._deliveries
 
     def verifyWeight(self, order_weight):
         if self.transport == "Bicycle":
-            return order_weight <= 5
+            return order_weight + self.weight <= 5
         elif self.transport == "Moto":
-            return order_weight <= 20
+            return order_weight + self.weight <= 20
         elif self.transport == "Car":
-            return order_weight <= 100
+            return order_weight + self.weight <= 100
         else:
             return False
         
@@ -42,13 +44,26 @@ class Courier:
         else:
             return 0
         
-    def verifyTime(self, path_cost, order_processing_time, weight):
+    def verifyTime(self, path_cost, order_processing_time, order_weight):
+        total_weight = self.weight + order_weight
         if self.transport == "Bicycle":
-            max_time = path_cost / (self.average_speed() - (0.6*weight))* 60
+            max_time = path_cost / (self.average_speed() - (0.6 * total_weight)) * 60
             return max_time <= order_processing_time
         elif self.transport == "Moto":
-            max_time = path_cost / (self.average_speed() - (0.5*weight))* 60
+            max_time = path_cost / (self.average_speed() - (0.5 * total_weight)) * 60
             return max_time <= order_processing_time
         elif self.transport == "Car":
-            max_time = path_cost / (self.average_speed() - (0.1*weight))* 60
+            max_time = path_cost / (self.average_speed() - (0.1 * total_weight)) * 60
             return max_time <= order_processing_time
+
+    def can_combine_delivery(self, new_order):
+        for delivery in self._deliveries:
+            if self.path_intersects(delivery, new_order):
+                return True
+        return False
+
+    def path_intersects(self, order1, order2):
+        last_node_order1 = order1.path[-1]
+        last_node_order2 = order2.path[-1]
+
+        return last_node_order1 in order2.path or last_node_order2 in order1.path
