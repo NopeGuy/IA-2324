@@ -20,6 +20,7 @@ def dev_menu():
     print("1. Represent Delivery Points as Graph")
     print("2. Use Search Algorithms")
     print("3. Compare Search Algorithm Results")
+    print("4. Import test cases")
     print("0. Exit to Main Menu")
     print("===============================")
     

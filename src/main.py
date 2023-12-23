@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from menu_functions import *
 from graph.GuimaraesStreetGraphGenerator import GuimaraesStreetGraphGenerator
+from Test import Tests
 
 def main():
     generator = GuimaraesStreetGraphGenerator()
@@ -11,14 +12,6 @@ def main():
     print("Guimarães Street Graph generated.")
     current_date = datetime.now().date()
     formatted_date = current_date.strftime("%d-%m-%Y")
-    
-    courier1 = Courier("Joao", "Bicycle")
-    courier2 = Courier("Maria", "Car")
-    couriers.append(courier1)
-    couriers.append(courier2)
-    orders.append(Order("Boda", 1, 1, 3000, "Rua de Camoes", "Rua da Saudade"))
-    orders.append(Order("Boda2", 1, 1, 3000, "Rua de Camoes", "Avenida Conde Margaride"))
-    orders.append(Order("Batata", 4, 1, 1000, "Rua de Camoes", "Rua da Abadia"))
 
     while True:
         print("\n      Welcome, today is " + formatted_date + ".")
@@ -106,6 +99,10 @@ def main():
                         compare_search_algorithm_results(guimaraes_graph, starting_node, finishing_node)
                     else:
                         print("\nNot a valid option.")
+                        
+                elif(choice == 4):
+                    Tests.import_cases(couriers, orders)
+                        
         else:
             print("\nInvalid choice. Please enter a valid option.")
 
