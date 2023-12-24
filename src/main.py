@@ -105,6 +105,12 @@ def main():
                     
                 elif(choice == 5):
                     Tests.import_orders(orders)
+                    
+                elif(choice == 6):
+                    input_edge = input("Enter the edge you want to remove (e.g. 'Rua da Penha-Rua da Caldeiroa'): ")
+                    input_edge = input_edge.split("-")
+                    if guimaraes_graph is not None:
+                        guimaraes_graph.remove_edge(input_edge[0], input_edge[1])
                         
         else:
             print("\nInvalid choice. Please enter a valid option.")

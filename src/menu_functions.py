@@ -22,6 +22,7 @@ def dev_menu():
     print("3. Compare Search Algorithm Results")
     print("4. Import test couriers")
     print("5. Import test orders")
+    print("6. Remove edge (Simulate roadblock)")
     print("0. Exit to Main Menu")
     print("===============================")
     
@@ -342,29 +343,34 @@ def process_orders(orders, couriers, guimaraes_graph):
     print("\n===== Assigning Orders to Couriers =====")
 
     for order in orders:
-        if order.path is not None and order.status == "Waiting":
-            sorted_couriers = sorted(couriers, key=lambda courier: (
-            courier.transport != "Bicycle", courier.transport != "Moto", courier.transport != "Car"))
+        try:
+            if order.path is not None and order.status == "Waiting":
+                sorted_couriers = sorted(couriers, key=lambda courier: (
+                courier.transport != "Bicycle", courier.transport != "Moto", courier.transport != "Car"))
 
-            selected_courier = None
-            for courier in sorted_couriers:
-                if courier.verifyWeight(order.weight) and courier.verifyTime(cost, order.processing_time, order.weight):
-                    estimated_time = courier.getTime(cost, order.weight)
-                    demanded_time = order.processing_time
-                    if courier.can_combine_delivery(order) or len(courier.get_deliveries()) == 0:
-                        selected_courier = courier
-                        break
+                selected_courier = None
+                for courier in sorted_couriers:
+                    if courier.verifyWeight(order.weight) and courier.verifyTime(cost, order.processing_time, order.weight):
+                        estimated_time = courier.getTime(cost, order.weight)
+                        demanded_time = order.processing_time
+                        if courier.can_combine_delivery(order) or len(courier.get_deliveries()) == 0:
+                            selected_courier = courier
+                            break
 
-            if selected_courier is not None:
-                selected_courier.add_delivery(order)
-                print(f"\nOrder for {order.client_name} added to {selected_courier.name} courier.")
-                rating = calculate_rating_based_on_percentage_difference(estimated_time, demanded_time)
-                print(f"User gave courier {selected_courier.name} a rating of {rating}.")
-                selected_courier.calculate_rating(rating)
-                print(f"Courier {selected_courier.name} has now a rating of {selected_courier.rating}.")
-                order.status = "Delivered"
-            else:
-                print(f"\nNo suitable courier found for order to {order.client_name}.")
+                if selected_courier is not None:
+                    selected_courier.add_delivery(order)
+                    price = order.calculate_price()
+                    price = courier.calculate_price(price)
+                    print(f"\nOrder for {order.client_name} added to courier {selected_courier.name}, with a cost of {price}.")
+                    rating = calculate_rating_based_on_percentage_difference(estimated_time, demanded_time)
+                    print(f"User gave courier {selected_courier.name} a rating of {rating}.")
+                    selected_courier.calculate_rating(rating)
+                    print(f"Courier {selected_courier.name} has now a rating of {selected_courier.rating}.")
+                    order.status = "Delivered"
+                else:
+                    print(f"\nNo suitable courier found for order to {order.client_name}.")
+        except:
+            print(f"\nNo path found for order to {order.client_name}, better luck next time (Let's hope there aren't any roadblocks in the future).")
 
 
 def calculate_rating_based_on_percentage_difference(estimated_time, demanded_time):

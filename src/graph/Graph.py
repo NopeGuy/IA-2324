@@ -83,6 +83,16 @@ class Grafo:
         for (adjacente, peso) in self.m_graph[nodo]:
             lista.append((adjacente, peso))
         return lista
+    
+    def remove_edge(self, node1, node2):
+        if node1 in self.m_graph and node2 in self.m_graph:
+            self.m_graph[node1] = [(n, weight) for n, weight in self.m_graph[node1] if n != node2]
+            
+            if not self.m_directed:
+                self.m_graph[node2] = [(n, weight) for n, weight in self.m_graph[node2] if n != node1]
+        else:
+            print(f"Nodes {node1} or {node2} not found in the graph.")
+
 
     def desenha(self):
         lista_v = self.m_nodes

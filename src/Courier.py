@@ -78,3 +78,13 @@ class Courier:
         self.ratinglist.append(user_rating)
         average_rating = sum(self.ratinglist) / len(self.ratinglist)
         self.rating = round(average_rating)
+        
+    def calculate_price(self, order_price):
+        if self.transport == "Bicycle":
+            return order_price + 1
+        elif self.transport == "Moto":
+            return order_price + 2
+        elif self.transport == "Car":
+            return order_price + 5
+        else:
+            return 0
