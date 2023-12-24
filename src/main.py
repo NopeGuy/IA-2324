@@ -12,8 +12,10 @@ def main():
     print("Guimarães Street Graph generated.")
     current_date = datetime.now().date()
     formatted_date = current_date.strftime("%d-%m-%Y")
+    removed_edges = []
 
     while True:
+        verify_removed_edges(guimaraes_graph, removed_edges, current_date)
         print("\n      Welcome, today is " + formatted_date + ".")
         main_menu()
         choice = get_user_choice()
@@ -108,9 +110,17 @@ def main():
                     
                 elif(choice == 6):
                     input_edge = input("Enter the edge you want to remove (e.g. 'Rua da Penha-Rua da Caldeiroa'): ")
+                    days = input("Enter the number of days you want to remove the edge for: ")
+                    date_of_release = current_date + timedelta(days=int(days))
+                    print("Date of release: " + date_of_release.strftime("%d-%m-%Y"))
                     input_edge = input_edge.split("-")
                     if guimaraes_graph is not None:
-                        guimaraes_graph.remove_edge(input_edge[0], input_edge[1])
+                        try:
+                            weight = guimaraes_graph.remove_edge(input_edge[0], input_edge[1])
+                            removed_edges.append((input_edge[0], input_edge[1], weight, date_of_release, current_date, guimaraes_graph))
+                            print("Edge removed successfully.")
+                        except:
+                            print("Edge not found.")
                         
         else:
             print("\nInvalid choice. Please enter a valid option.")

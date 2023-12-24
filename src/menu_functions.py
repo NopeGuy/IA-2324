@@ -230,12 +230,13 @@ def display_couriers(couriers):
         print(f"Rating List: {courier.ratinglist}")
     print("===============================")
     
-def choose_best_algorithm(graph, starting_node, finishing_node):
+def choose_best_algorithm(graph, starting_node, finishing_node, order_client_name):
     guimaraes_graph = graph
     cost = 0
     path = []
     
     print("\n\n===== Compare Search Algorithm Results =====")
+    print("=====  Client: " + order_client_name + "  =====")
     
     try:
         path_a_star, cost_a_star = guimaraes_graph.procura_aStar(starting_node, finishing_node)
@@ -330,7 +331,7 @@ def process_orders(orders, couriers, guimaraes_graph):
 
     for order in orders:
         if order.status == "Waiting":
-            path, cost = choose_best_algorithm(guimaraes_graph, starting_node, order.last_node)
+            path, cost = choose_best_algorithm(guimaraes_graph, starting_node, order.last_node, order.client_name)
             order.path = path
             order.cost = cost
             print(f"\nOrder for {order.client_name} has been processed.\nCost: {order.cost} km.\nPath: {order.path}.")
@@ -386,3 +387,19 @@ def calculate_rating_based_on_percentage_difference(estimated_time, demanded_tim
     else:
         return 1
     
+#checks if the days have passed and add them again to the graph
+def verify_removed_edges(graph, removed_edges, current_date):
+    for edge in removed_edges:
+        node1 = edge[0]
+        node2 = edge[1]
+        weight = edge[2]
+        release_date = edge[3]
+        if release_date == current_date:
+            graph.add_edge(node1, node2, weight)
+            print("________________________________________________________________________________")
+            print("                               \\\\\\\\ INFO ////                                   ")
+            print("\n          Roadblock ended between " + node1 + " and " + node2 + ".")
+            print("________________________________________________________________________________")
+            return True
+        else:
+            return False

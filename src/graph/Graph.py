@@ -86,12 +86,24 @@ class Grafo:
     
     def remove_edge(self, node1, node2):
         if node1 in self.m_graph and node2 in self.m_graph:
-            self.m_graph[node1] = [(n, weight) for n, weight in self.m_graph[node1] if n != node2]
-            
+            for i, (n, weight) in enumerate(self.m_graph[node1]):
+                if n == node2:
+                    removed_weight = weight
+                    del self.m_graph[node1][i]
+                    break
+            else:
+                print(f"Edge not found: {node1}-{node2}")
+                return None
+                
             if not self.m_directed:
-                self.m_graph[node2] = [(n, weight) for n, weight in self.m_graph[node2] if n != node1]
+                for i, (n, weight) in enumerate(self.m_graph[node2]):
+                    if n == node1:
+                        del self.m_graph[node2][i]
+                        break
+            return removed_weight
         else:
             print(f"Nodes {node1} or {node2} not found in the graph.")
+            return None
 
 
     def desenha(self):
