@@ -39,8 +39,10 @@ def main():
         elif choice == 4:
             display_sent_orders(orders)
         elif choice == 5:
-            display_couriers(couriers)
+            display_canceled_orders(orders)
         elif choice == 6:
+            display_couriers(couriers)
+        elif choice == 7:
             current_date = current_date + timedelta(days=1)
             formatted_date = current_date.strftime("%d-%m-%Y")
             for courier in couriers:
@@ -48,7 +50,7 @@ def main():
                 courier._deliveries = []
             process_orders(orders, couriers, guimaraes_graph)
         
-        elif choice == 7:
+        elif choice == 8:
 
             while True:
                 dev_menu()

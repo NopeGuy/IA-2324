@@ -9,6 +9,7 @@ class Order:
         self.path = []
         self.cost = 0
         self.status = "Waiting"
+        self.tries = 0
         
     #calculates price of order by weight, volume and time   
     def calculate_price(self):

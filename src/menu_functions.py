@@ -9,9 +9,10 @@ def main_menu():
     print("2. Register Order")
     print("3. Display Pending Orders")
     print("4. Display Sent Orders")
-    print("5. Display Registered Couriers")
-    print("6. Advance a day")
-    print("7. Dev Menu")
+    print("5. Display Canceled Orders")
+    print("6. Display Registered Couriers")
+    print("7. Advance a day")
+    print("8. Dev Menu")
     print("0. Exit")
     print("===============================")
 
@@ -221,6 +222,14 @@ def display_sent_orders(orders):
                 f"Start Node: {order.starting_node}, Last Node: {order.last_node}")
     print("===============================")
 
+def display_canceled_orders(orders):
+    print("===== Registered Orders =====")
+    for order in orders:
+        if(order.status == "Cancelled"):
+            print(f"Client: {order.client_name}, Weight: {order.weight} kg, Volume: {order.volume} cm3,"
+                f" Processing Time: {order.processing_time} minutes, "
+                f"Start Node: {order.starting_node}, Last Node: {order.last_node}")
+
 
 def display_couriers(couriers):
     couriers.sort(key=lambda courier: courier.rating, reverse=True)
@@ -342,7 +351,7 @@ def process_orders(orders, couriers, guimaraes_graph):
         return
 
     print("\n===== Assigning Orders to Couriers =====")
-
+    orders.sort(key=lambda order: order.tries, reverse=True)
     for order in orders:
         try:
             if order.path is not None and order.status == "Waiting":
@@ -370,6 +379,10 @@ def process_orders(orders, couriers, guimaraes_graph):
                     order.status = "Delivered"
                 else:
                     print(f"\nNo suitable courier found for order to {order.client_name}.")
+                    order.tries += 1
+                    if order.tries == 5:
+                        print(f"Order to {order.client_name} has been cancelled. (Probably time set is impossible for delivery)")
+                        order.status = "Cancelled"
         except:
             print(f"\nNo path found for order to {order.client_name}, better luck next time (Let's hope there aren't any roadblocks in the future).")
 

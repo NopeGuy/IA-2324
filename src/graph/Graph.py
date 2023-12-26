@@ -117,15 +117,20 @@ class Grafo:
                 lista = (n, adjacente)
                 g.add_edge(n, adjacente, weight=peso)
 
-        # Use spring_layout for automatic layout adjustment
-        pos = nx.spring_layout(g)
-        
-        nx.draw_networkx(g, pos, with_labels=True, font_weight='bold')
+        pos = nx.kamada_kawai_layout(g, scale=7.0)
+            
+        plt.figure(figsize=(20, 16))
+
+        nx.draw_networkx(g, pos, with_labels=True, font_weight='bold', font_size=8)
+
         labels = nx.get_edge_attributes(g, 'weight')
         nx.draw_networkx_edge_labels(g, pos, edge_labels=labels)
 
         plt.draw()
         plt.show()
+
+
+
 
 
     def add_heuristica(self, n, estima):
