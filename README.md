@@ -138,7 +138,7 @@ The graph can be visualized using NetworkX and Matplotlib.
 
 ## Contributors
 
-- Luís F.
-- Bernardo L.
-- João P.
-- David T.
+[@NopeGuy](https://github.com/NopeGuy) \
+[@SenseiBott](https://github.com/SenseiBott) \
+[@Gnomo03](https://github.com/Gnomo03) \
+[@Bernazad](https://github.com/HBernaH) 
